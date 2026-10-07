@@ -10,12 +10,12 @@ that the ai.nco.ge DXF importer understands. Everything runs locally in the user
 
 | ფაილი | რას აკეთებს |
 |---|---|
-| `src/dwg.worker.ts` | Web Worker: იტვირთავს LibreDWG WASM-ს, კითხულობს DWG-ს, აბრუნებს DXF ტექსტს |
+| `src/dwg.worker.ts` | Web Worker: იტვირთავს LibreDWG WASM-ს, კითხულობს DWG-ს, აბრუნებს DXF-ს UTF-8 ბაიტებად (transferable ArrayBuffer) |
 | `src/dwgToDxf.ts` | `dwgDbToDxf(db)` — LibreDWG-ის `DwgDatabase` → ASCII DXF (LINE, LWPOLYLINE, POLYLINE2D/3D, ARC, CIRCLE, ELLIPSE, SPLINE, SOLID, TEXT, MTEXT, INSERT/ATTRIB, ბლოკები; რადიანი→გრადუსი, OCS სარკე) |
-| `src/dwgRead.ts` | `readDwg(buf)` — worker-ის გაშვება/დასრულება, დროის ლიმიტი, შეცდომები ქართულად |
+| `src/dwgRead.ts` | `readDwg(buf)` → `{ dxf: ArrayBuffer, stats, version, ms }` — worker-ის გაშვება/დასრულება, დროის ლიმიტი, შეცდომები ქართულად |
 
 ai.nco.ge-ის დანარჩენი კოდი (DXF პარსერი, ოთახების ამოცნობა, UI) ცალკე პროგრამაა და ამ worker-ს მხოლოდ
-`postMessage`-ით (DWG ბაიტები → DXF ტექსტი) უკავშირდება.
+`postMessage`-ით (DWG ბაიტები → DXF ბაიტები) უკავშირდება; DXF-ის ანალიზი საიტის ცალკე worker-შია.
 
 ## მესამე მხარის კომპონენტი / Third-party component (GPL-3.0)
 

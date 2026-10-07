@@ -2,7 +2,7 @@
 // nco-dwg-reader — DWG → DXF ბრაუზერში (ai.nco.ge, N Construction). Copyright (C) 2026 Giorgi Datuashvili.
 // იყენებს @mlightcad/libredwg-web (GNU LibreDWG, GPL-3.0). This program comes with ABSOLUTELY NO WARRANTY; see LICENSE.
 /**
- * DWG → DXF ტექსტი ცალკე Web Worker-ში (UI არ იყინება; WASM-ის ავარიის შემთხვევაში worker უბრალოდ იხურება).
+ * DWG → DXF (UTF-8 ბაიტები, transferable — ასლის გარეშე) ცალკე Web Worker-ში (UI არ იყინება; WASM-ის ავარიის შემთხვევაში worker უბრალოდ იხურება).
  * LibreDWG (libredwg-web 0.7.15, GPL-3.0) — უცვლელი პაკეტი; WASM-ს (~9.5 მბ) Vite თვითონ აგდებს assets-ში (ჰეშიანი სახელით)
  * და იტვირთება მხოლოდ DWG ფაილის ატვირთვისას.
  */
@@ -22,7 +22,8 @@ self.onmessage = async (ev: MessageEvent<{ buf: ArrayBuffer }>) => {
     try { lib.dwg_free(dwg as never) } catch { /* მეხსიერება worker-თან ერთად თავისუფლდება */ }
     post({ stage: 'convert' })
     const { text, stats } = dwgDbToDxf(db)
-    post({ ok: true, text, stats, ms: Math.round(performance.now() - t0) })
+    const dxf = new TextEncoder().encode(text).buffer
+    ;(self as unknown as Worker).postMessage({ ok: true, dxf, stats, ms: Math.round(performance.now() - t0) }, [dxf])
   } catch (e) {
     post({ ok: false, error: e instanceof Error ? e.message : String(e) })
   }
