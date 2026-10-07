@@ -1,0 +1,11 @@
+{
+  "name": "nco-dwg-reader",
+  "version": "1.0.0",
+  "description": "DWG → ASCII DXF in the browser (Web Worker + GNU LibreDWG WebAssembly), used by ai.nco.ge plan import",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@mlightcad/libredwg-web": "0.7.15"
+  }
+}
